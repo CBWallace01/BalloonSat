@@ -17,11 +17,15 @@
 
 // [START app]
 const express = require('express');
-
 const app = express();
+var gcs = require('@google-cloud/storage')();
 
-app.get('/', (req, res) => {
-  res.status(200).render('index.html').end();
+var bucket = gcs.bucket('balloonsat-173803.appspot.com');
+
+var file = bucket.file('site/index.html');
+
+app.get('/', function (req, res) {
+  res.sendFile(file);
 });
 
 // Start the server
