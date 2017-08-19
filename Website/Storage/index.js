@@ -4,6 +4,16 @@ var _minute = _second * 60;
 var _hour = _minute * 60;
 var _day = _hour * 24;
 var timer;
+var refresh;
+var slideshow;
+var images = [];
+var imagefolder = 'sourceimages';
+var imagetype = 'png';
+var nextImageLoc = 0;
+var imageBaseURL = 'https://storage.cloud.google.com/balloonsat-173803.appspot.com/';
+
+var getUrl = window.location;
+var baseURL = getUrl .protocol + "//" + getUrl.host
 
 function showRemaining() {
   var now = new Date();
@@ -24,23 +34,22 @@ function showRemaining() {
   document.getElementById('countdown').innerHTML += seconds + 'secs';
 }
 
+function refreshImageList() {
+    $.get(baseURL+"/reload", function(data, status){
+        images = $.grep(data, function(el, idx) {return (el.name.indexOf(imagefolder) < 0 || el.name.indexOf(imagetype) < 0)}, true)
+    });
+}
+
+function nextImage() {
+    if(images.length > 0){
+        if(nextImageLoc==images.length){
+            nextImageLoc = 0;
+        }
+        var nextURL = imageBaseURL + images[nextImageLoc++].name;
+        $("#activeImage").attr("src",nextURL);
+    }
+}
+
 timer = setInterval(showRemaining, 1000);
-
-var config = {
-  projectId: 'balloonsat-173803',
-  keyFilename: 'BalloonSat-47b9eb0223be.json'
-};
-
-var now = new Date();
-var nowSec = Math.round(now.getTime() / 1000);
-var laterSec = nowSec + 3600;
-
-console.log(window.btoa('{"alg":"RS256","typ":"JWT"}'));
-var claims = '{"iss":"balloonsat-173803@appspot.gserviceaccount.com",'+
-  '"scope":"https://storage-api.googleapis.com",'+
-  '"aud":"https://www.googleapis.com/oauth2/v4/token",'+
-  '"exp":'+nowSec+','+
-  '"iat":'+laterSec+'}'
-console.log(nowSec);
-console.log(laterSec);
-console.log(window.btoa(claims));
+refresh = setInterval(refreshImageList, 5000);
+refresh = setInterval(nextImage, 1000);

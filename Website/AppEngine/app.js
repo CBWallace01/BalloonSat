@@ -18,9 +18,28 @@
 // [START app]
 const express = require('express');
 const app = express();
+const Storage = require('@google-cloud/storage');
+
+var config = {
+  projectId: 'balloonsat-173803',
+  keyFilename: 'BalloonSat-47b9eb0223be.json'
+};
+
+const storage = Storage(config);
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '\\index.html');
+  res.sendFile(__dirname + '/index.html');
+});
+app.get('/index.html', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
+app.get('/index.js', function (req, res) {
+  res.sendFile(__dirname + '/index.js');
+});
+app.get('/reload',function (req, res) {
+   storage.bucket('balloonsat-173803.appspot.com').getFiles().then(function(images){
+        res.send(images[0]);
+   }); 
 });
 
 // Start the server

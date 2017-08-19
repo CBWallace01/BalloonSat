@@ -25,7 +25,8 @@
     "@google-cloud/storage": "^1.2.1",
     "express": "4.15.3",
     "jquery": "^3.2.1",
-    "jsrsasign": "^8.0.3"
+    "jsrsasign": "^8.0.3",
+    "pug": "^2.0.0-rc.3"
   },
   "devDependencies": {
     "@google-cloud/nodejs-repo-tools": "1.4.16"
